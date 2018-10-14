@@ -4,10 +4,20 @@ services:
     image: "postgres:latest"
   redis:
     image: "redis:latest"
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - "4242:80"
   api:
     build:
       dockerfile: Dockerfile.dev # specify dockerfile name
       context: ./server # from where to use the files for the base image
+    depends_on:
+      - postgres
+      - redis
     volumes: # use reference to local files, thus enabling HMR
       - /app/node_modules
       - ./server:/app
@@ -23,6 +33,9 @@ services:
     build:
       dockerfile: Dockerfile.dev
       context: ./client
+    depends_on:
+      - api
+      - nginx
     volumes:
       - /app/node_modules
       - ./client:/app
