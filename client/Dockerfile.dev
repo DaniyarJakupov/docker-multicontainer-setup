@@ -2,10 +2,10 @@
 FROM node:alpine
 
 # Create a dir for the app
-WORKDIR /app
+WORKDIR '/app'
 
 # Copy package.json to /app folder inside docker image
-COPY package.json .
+COPY ./package.json ./
 
 # Install dependencies
 RUN npm install
