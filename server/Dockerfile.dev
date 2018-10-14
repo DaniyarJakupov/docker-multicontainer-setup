@@ -2,15 +2,15 @@
 FROM node:alpine
 
 # Create a dir for the app
-WORKDIR /server
+WORKDIR /app
 
-# Copy package.json to /server folder inside docker image
+# Copy package.json to /app folder inside docker image
 COPY package.json .
 
 # Install dependencies
 RUN npm install
 
-# Copy everything to /server folder inside docker image
+# Copy everything to /app folder inside docker image
 COPY . .
 
 # Tell the image what to do when it starts as a container
