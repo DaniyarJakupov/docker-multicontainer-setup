@@ -1,0 +1,36 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t daniyarjakupov/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run daniyarjakupov/react-test npm run test -- --coverage
+
+after_success:
+  # create prod images for all services
+  - docker build -t daniyarjakupov/multi-client ./client
+  - docker build -t daniyarjakupov/multi-nginx ./nginx
+  - docker build -t daniyarjakupov/multi-server ./server
+  - docker build -t daniyarjakupov/multi-worker ./worker
+  # Login to docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push daniyarjakupov/multi-client
+  - docker push daniyarjakupov/multi-nginx
+  - docker push daniyarjakupov/multi-server
+  - docker push daniyarjakupov/multi-worker
+
+# deploy:
+#   provider: elasticbeanstalk
+#   region: 'eu-1'
+#   app: 'docker-react'
+#   env: 'Docker-react-env'
+#   bucket_name: ''
+#   bucket_path: 'docker-react'
+#   on:
+#     branch: master
+#   access_key_id: $AWS_ACCESS_KEY
+#   secret_access_key:
+#     secure: '$AWS_SECRET_KEY'
