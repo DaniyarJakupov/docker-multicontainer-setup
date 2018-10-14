@@ -1,12 +1,11 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import React, { Component } from "react";
+import axios from "axios";
 
 class Fib extends Component {
   state = {
     seenIndexes: [],
     values: {},
-    index: ''
+    index: ""
   };
 
   componentDidMount() {
@@ -15,30 +14,55 @@ class Fib extends Component {
   }
 
   fetchValues = async () => {
-    const values = await axios.get('/api/values/current');
+    const values = await axios.get("/api/values/current");
     this.setState({ values: values.data });
   };
 
   fetchIndexes = async () => {
-    const seenIndexes = await axios.get('/api/values/all');
+    const seenIndexes = await axios.get("/api/values/all");
     this.setState({ seenIndexes: seenIndexes.data });
   };
 
-  renderSeenIndexes = () => {
-    return this.state.seenIndexes.map(({ number }) => number).join(', ');
+  handleSubmit = async event => {
+    event.preventDefault();
+
+    await axios.post("/api/values", {
+      index: this.state.index
+    });
+    this.setState({ index: "" });
   };
 
-  renderValues = () => {};
+  renderSeenIndexes = () => {
+    return this.state.seenIndexes.map(({ number }) => number).join(", ");
+  };
+
+  renderValues = () => {
+    const entries = [];
+
+    for (let key in this.state.values) {
+      entries.push(
+        <div key={key}>
+          For index {key} I calculated {this.state.values[key]}
+        </div>
+      );
+    }
+
+    return entries;
+  };
 
   render() {
     return (
       <div>
         <h1>Fib Calculator</h1>
 
-        <form>
+        <form onSubmit={this.handleSubmit}>
           <lavel>Enter index</lavel>
-          <input type="text" />
-          <button type="submit">Submit</button>
+          <input
+            type="text"
+            value={this.state.index}
+            onChange={event => this.setState({ index: event.target.value })}
+          />
+          <button>Submit</button>
         </form>
 
         <h3>Previously entered indexes:</h3>
