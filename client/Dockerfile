@@ -14,9 +14,7 @@ RUN npm install
 # Copy everything to /app folder inside docker image
 COPY . .
 
-# Tell the image what to do when it starts as a container
-# a.k.a Default command
-CMD ["npm", "run", "build"]
+RUN npm run build
 
 # 2. Run stage
 FROM nginx
