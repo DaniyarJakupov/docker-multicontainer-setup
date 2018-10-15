@@ -24,7 +24,7 @@ after_success:
 
 # deploy:
 #   provider: elasticbeanstalk
-#   region: 'eu-1'
+#   region: 'eu-central-1'
 #   app: 'docker-react'
 #   env: 'Docker-react-env'
 #   bucket_name: ''
